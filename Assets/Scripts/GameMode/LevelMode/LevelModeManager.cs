@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace WordJam
@@ -9,13 +7,16 @@ namespace WordJam
         protected override void Awake()
         {
             CurrentGameMode = GameModeEnum.LevelMode;
-
-            CurrentLevelData = new()
-            {
-                GridSize = new(3, 4)
-            };
-
+            LoadLevelData();
             base.Awake();
+        }
+
+        private void LoadLevelData()
+        {
+            TextAsset textAsset = Resources.Load<TextAsset>("LevelDataL1");
+            string json = textAsset.text;
+            Debug.Log($"Level Data JSON: {json}");
+            CurrentLevelData = JsonUtility.FromJson<LevelData>(json);
         }
     }
 }

@@ -1,28 +1,36 @@
-using System.Collections;
+using System;
 using System.Collections.Generic;
-using UnityEngine;
 
 namespace WordJam
 {
-    [SerializeField]
+    [Serializable]
     public class GridSize
     {
-        public int X = 0;
-        public int Y = 0;
+        public int x = 0;
+        public int y = 0;
 
         public GridSize(int x = 0, int y = 0)
         {
-            X = x;
-            Y = y;
+            this.x = x;
+            this.y = y;
         }
     }
 
-    [SerializeField]
+    [Serializable]
+    public class GridData
+    {
+        public int tileType;
+        public string letter;
+    }
+
+    [Serializable]
     public class LevelData
     {
-        public int BugCount = 0;
-        public int WordCount = 0;
-        public int TimeSeconds = 0;
-        public GridSize GridSize = new();
+        public int bugCount = 0;
+        public int wordCount = 0;
+        public int timeSec = 0;
+        public int totalScore = 0;
+        public GridSize gridSize = new();
+        public List<GridData> gridData = new();
     }
 }

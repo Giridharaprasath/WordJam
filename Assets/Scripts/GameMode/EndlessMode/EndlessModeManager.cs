@@ -12,7 +12,7 @@ namespace WordJam
 
             CurrentLevelData = new()
             {
-                GridSize = new(4, 4)
+                gridSize = new(4, 4)
             };
 
             base.Awake();

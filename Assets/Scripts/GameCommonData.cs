@@ -11,6 +11,20 @@ namespace WordJam
             { 21, "U" }, { 22, "V" }, { 23, "W" }, { 24, "X" }, { 25, "Y" }, { 26, "Z" }
         };
 
-        
+        public static int GetLetterIndex(string letter)
+        {
+            if (AlphabetToWordMap.Values.Contains(letter))
+            {
+                foreach (var kvp in AlphabetToWordMap)
+                {
+                    if (kvp.Value.Equals(letter, System.StringComparison.OrdinalIgnoreCase))
+                    {
+                        return kvp.Key;
+                    }
+                }
+            }
+
+            return -1;
+        }
     }
 }
