@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
@@ -8,34 +7,39 @@ namespace WordJam
 {
     public abstract class GameModeManager : MonoBehaviour
     {
-        internal GameInstanceManager GameInstanceManager;
+        protected GameInstanceManager GameInstanceManager;
+        protected GameUIManager GameUIManager;
 
         [Header("Game Mode Settings")]
-        public GameModeEnum CurrentGameMode;
-        public LevelData CurrentLevelData;
+        protected GameModeEnum CurrentGameMode;
+        protected LevelData CurrentLevelData;
+        protected int CurrentLevelNumber = 1;
 
         [Header("Grid Settings")]
         public GridLayoutGroup GridLayoutGroup;
         public GameObject GridParentPrefab;
-
-        [SerializeField]
-        private List<GameObject> gridParentList;
+        protected List<GameObject> gridParentList = new();
 
         [Header("Tile Settings")]
         public Tile TilePrefab;
-        [SerializeField]
-        private List<Tile> tileList;
+        protected List<Tile> tileList = new();
+        protected LinkedList selectedTilesList = new();
 
         [Header("Line Renderer")]
         public LineRenderer LineRenderer;
 
-        private LinkedList<Tile> SelectedTiles = new();
-        public List<string> TileIndexList = new();
-        [SerializeField]
-        private Graph TileGraph = new();
-        private int LastSelectedTileIndex = -1;
+        // * Private Variables
+        protected Trie selectedWords = new();
+        protected Graph tileGraph = new();
+        protected int lastSelectedTileIndex = -1;
+        protected int totalGridCount = 0;
+        protected int currentWordCount = 0;
+        protected int currentScore = 0;
+        protected float currentTimeLeft = -1;
+        protected bool isDragging = false;
+        protected bool hasTimer = false;
 
-        private int totalGridCount = 0;
+        private int minutes, seconds;
 
         protected virtual void Awake()
         {
@@ -50,9 +54,47 @@ namespace WordJam
             SpawnGridParent();
             SpawnTiles();
             CreateTileGraph();
+            SetGameModeUI();
         }
 
-        internal virtual void SpawnGridParent()
+        protected virtual void Update()
+        {
+            if (isDragging)
+            {
+                if (Input.touchCount == 0)
+                {
+                    isDragging = false;
+                    CheckSelectedWord();
+                }
+            }
+            else
+            {
+                if (Input.touchCount > 0)
+                {
+                    isDragging = true;
+                }
+            }
+
+            if (hasTimer)
+            {
+                SetCurrentTimeLeft();
+            }
+        }
+
+        protected void SetCurrentTimeLeft()
+        {
+            if (currentTimeLeft <= 0)
+            {
+                LoadSceneAgain();
+                hasTimer = false;
+                return;
+            }
+
+            currentTimeLeft -= Time.deltaTime;
+            SetTimeLeftText();
+        }
+
+        protected virtual void SpawnGridParent()
         {
             for (int i = 0; i < totalGridCount; i++)
             {
@@ -62,7 +104,7 @@ namespace WordJam
             }
         }
 
-        internal virtual void SpawnTiles()
+        protected virtual void SpawnTiles()
         {
             List<GridData> gridData = new(CurrentLevelData.gridData);
 
@@ -70,7 +112,7 @@ namespace WordJam
             {
                 Tile tile = Instantiate(TilePrefab, gridParentList[i].transform);
                 tile.name = $"Tile_{i}";
-                tile.SetTileText(gridData[i].letter);
+                tile.SetTileText(gridData[i]);
                 tile.TileIndex = i;
                 tile.OnTileSelected += OnTileSelected;
 
@@ -78,11 +120,37 @@ namespace WordJam
             }
         }
 
-        internal virtual void CreateTileGraph()
+        protected virtual void CreateTileGraph()
         {
             for (int i = 0; i < totalGridCount; i++)
             {
-                TileGraph.Add(i, GetAdjacentElements(i, CurrentLevelData.gridSize.x, CurrentLevelData.gridSize.y));
+                tileGraph.Add(i, GetAdjacentElements(i, CurrentLevelData.gridSize.x, CurrentLevelData.gridSize.y));
+            }
+        }
+
+        protected virtual void SetGameModeUI()
+        {
+            if (GameUIManager == null)
+            {
+                GameUIManager = FindAnyObjectByType<GameUIManager>();
+            }
+
+            if (CurrentLevelData.wordCount > 0)
+            {
+                GameUIManager.SetWordCountLeftState(true);
+                SetWordCountLeftText();
+            }
+            if (CurrentLevelData.totalScore > 0)
+            {
+                GameUIManager.SetScoreState(true);
+                SetScoreText();
+            }
+            if (CurrentLevelData.timeSec > 0)
+            {
+                currentTimeLeft = CurrentLevelData.timeSec;
+                GameUIManager.SetTimeLeftState(true);
+                SetTimeLeftText();
+                hasTimer = true;
             }
         }
 
@@ -116,33 +184,27 @@ namespace WordJam
             return AdjacentNodes;
         }
 
-        private void OnTileSelected(Tile tile)
+        protected virtual void OnTileSelected(Tile tile)
         {
-            if (tile.IsSelected)
-            {
-                // TODO : ADD LOGIC WHEN SELECTING AGAIN
-                return;
-            }
-
-            if (SelectedTiles.Contains(tile))
+            if (selectedTilesList.Contains(tile.TileIndex))
             {
                 Debug.Log($"Tile Already Selected : {tile.TileIndex} : {GameCommonData.AlphabetToWordMap[tile.LetterIndex]}");
+                SetToLastSelectedTile(tile);
                 return;
             }
 
-            if (LastSelectedTileIndex == tile.TileIndex) return;
+            if (lastSelectedTileIndex == tile.TileIndex) return;
 
-            if (LastSelectedTileIndex != -1)
+            if (lastSelectedTileIndex != -1)
             {
-                if (!TileGraph.GetIsNodeAdjacent(tile.TileIndex, LastSelectedTileIndex))
+                if (!tileGraph.CheckIsNodeAdjacent(tile.TileIndex, lastSelectedTileIndex))
                 {
                     Debug.Log($"On Selected Tile Is Not Adjacent : {tile.TileIndex} : {GameCommonData.AlphabetToWordMap[tile.LetterIndex]}");
                     return;
                 }
             }
 
-            LastSelectedTileIndex = tile.TileIndex;
-            // tile.IsSelected = true;
+            lastSelectedTileIndex = tile.TileIndex;
 
             LineRenderer.positionCount++;
             Vector3[] positions = new Vector3[LineRenderer.positionCount];
@@ -150,36 +212,113 @@ namespace WordJam
             positions[LineRenderer.positionCount - 1] = transform.InverseTransformPoint(tile.transform.position);
             LineRenderer.SetPositions(positions);
 
-            SelectedTiles.AddLast(tile);
-            TileIndexList.Add(GameCommonData.AlphabetToWordMap[tile.LetterIndex]);
-            Debug.Log($"On Selected : {LastSelectedTileIndex} : {GameCommonData.AlphabetToWordMap[tile.LetterIndex]}");
+            selectedTilesList.Add(tile.TileIndex);
+            Debug.Log($"On Selected : {lastSelectedTileIndex} : {GameCommonData.AlphabetToWordMap[tile.LetterIndex]}");
         }
 
-        [ContextMenu("Check Selected")]
-        public void Editor_CheckSelected()
+        private void SetToLastSelectedTile(Tile tile)
         {
-            StringBuilder stringBuilder = new();
-            Debug.Log($"Linked List Count : {SelectedTiles.Count}");
-            var node = SelectedTiles.First;
-            while (node != null)
+            lastSelectedTileIndex = tile.TileIndex;
+
+            int index = selectedTilesList.FindIndex(tile.TileIndex);
+            if (index == -1)
             {
-                string alphabet = GameCommonData.AlphabetToWordMap[node.Value.LetterIndex];
+                Debug.LogWarning($"Last Selected Tile Does Not Exists!!");
+                return;
+            }
+
+            LineRenderer.positionCount = index + 1;
+            Vector3[] positions = new Vector3[LineRenderer.positionCount];
+            LineRenderer.GetPositions(positions);
+            LineRenderer.SetPositions(positions);
+
+            selectedTilesList.RemoveFrom(tile.TileIndex);
+        }
+
+        protected virtual void CheckSelectedWord()
+        {
+#if UNITY_EDITOR
+            if (GameInstanceManager == null) return;
+#endif
+
+            if (selectedTilesList.Count == 0) return;
+
+            StringBuilder stringBuilder = new();
+            // Debug.Log($"Linked List Count : {SelectedTilesList.Count}");
+
+            List<int> tilesIndex = selectedTilesList.GetData();
+
+            foreach (int tileIndex in tilesIndex)
+            {
+                Tile tile = tileList[tileIndex];
+                string alphabet = GameCommonData.AlphabetToWordMap[tile.LetterIndex];
                 stringBuilder.Append(alphabet);
-                Debug.Log($"Linked List Index : {alphabet}");
-                node = node.Next;
+                // Debug.Log($"Linked List Index : {alphabet}");
             }
 
             string ToCheckWord = stringBuilder.ToString();
-            SelectedTiles.Clear();
-            TileIndexList.Clear();
-            LastSelectedTileIndex = -1;
 
+            if (GameInstanceManager.AllWordsTrie.Contains(ToCheckWord))
+            {
+                if (selectedWords.Contains(ToCheckWord))
+                {
+                    Debug.Log("Cant Select the same words again");
+                    selectedTilesList.Clear();
+                    lastSelectedTileIndex = -1;
+                    LineRenderer.positionCount = 0;
+                    return;
+                }
+                selectedWords.Add(ToCheckWord);
+                // Debug.Log($"Selected Word Exists!!");
+                currentWordCount++;
+                CalculateScore();
+                CheckWin();
+            }
+
+            selectedTilesList.Clear();
+            lastSelectedTileIndex = -1;
             LineRenderer.positionCount = 0;
+        }
 
-            if (GameInstanceManager == null) return;
+        protected virtual void CalculateScore()
+        {
+            List<int> tileIndex = selectedTilesList.GetData();
 
-            bool exists = GameInstanceManager.AllWordsTrie.Contains(ToCheckWord);
-            Debug.Log($"Does the word '{ToCheckWord}' exist? {exists}");
+            foreach (int index in tileIndex)
+            {
+                currentScore += tileList[index].GetTileScorePoints();
+            }
+        }
+
+        protected virtual void CheckWin()
+        {
+            SetScoreText();
+        }
+
+        protected void LoadSceneAgain()
+        {
+            GameInstanceManager.LoadLevelMode();
+        }
+
+        protected virtual void SetWordCountLeftText()
+        {
+            GameUIManager.SetWordCountLeftText(CurrentLevelData.wordCount - currentWordCount);
+        }
+
+        protected virtual void SetScoreText()
+        {
+            string totalScore = currentScore.ToString();
+            if (CurrentLevelData.totalScore > 0)
+                totalScore += " / " + CurrentLevelData.totalScore;
+
+            GameUIManager.SetScoreText(totalScore);
+        }
+
+        protected virtual void SetTimeLeftText()
+        {
+            minutes = (int)currentTimeLeft / 60;
+            seconds = (int)currentTimeLeft % 60;
+            GameUIManager.SetTimeLeftText($"{minutes} : {seconds}");
         }
     }
 }

@@ -10,6 +10,7 @@ namespace WordJam
     {
         public static GameInstanceManager Instance { get; private set; }
 
+        private readonly string MainMenuScene = "MainMenu";
         private readonly string EndlessModeScene = "EndlessModeScene";
         private readonly string LevelModeScene = "LevelModeScene";
 
@@ -55,6 +56,11 @@ namespace WordJam
             }
         }
 
+        public void LoadMainMenu()
+        {
+            SceneManager.LoadScene(MainMenuScene);
+        }
+        
         public void LoadEndlessMode()
         {
             SceneManager.LoadScene(EndlessModeScene);

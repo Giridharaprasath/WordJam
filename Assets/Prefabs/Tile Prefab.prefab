@@ -92,7 +92,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &3198984890470820193
 RectTransform:
   m_ObjectHideFlags: 0
@@ -242,7 +242,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &3752401011546920217
 RectTransform:
   m_ObjectHideFlags: 0
@@ -317,7 +317,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &822477355439828278
 RectTransform:
   m_ObjectHideFlags: 0
@@ -600,7 +600,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &7293174272821791593
 RectTransform:
   m_ObjectHideFlags: 0
@@ -714,4 +714,8 @@ MonoBehaviour:
   TileIndex: 0
   LetterIndex: 0
   LetterText: {fileID: 3607313622835476064}
-  IsSelected: 0
+  BonusBug: {fileID: 45450720790491816}
+  PointsObject:
+  - {fileID: 1227062394812861922}
+  - {fileID: 139465374767324547}
+  - {fileID: 1672099033825042238}

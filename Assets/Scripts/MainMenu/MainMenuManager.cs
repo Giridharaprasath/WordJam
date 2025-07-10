@@ -10,6 +10,8 @@ namespace WordJam
         private Button EndlessModeButton;
         [SerializeField]
         private Button LevelsModeButton;
+        [SerializeField]
+        private Button ClearDataButton;
 
         private GameInstanceManager GameInstanceManager;
 
@@ -17,6 +19,7 @@ namespace WordJam
         {
             EndlessModeButton?.onClick.AddListener(OnClickEndlessMode);
             LevelsModeButton?.onClick.AddListener(OnClickLevelsMode);
+            ClearDataButton?.onClick.AddListener(OnClickClearData);
 
             GameInstanceManager = GameInstanceManager.Instance;
         }
@@ -29,6 +32,11 @@ namespace WordJam
         private void OnClickLevelsMode()
         {
             GameInstanceManager?.LoadLevelMode();
+        }
+
+        private void OnClickClearData()
+        {
+            PlayerPrefs.DeleteAll();
         }
     }
 }

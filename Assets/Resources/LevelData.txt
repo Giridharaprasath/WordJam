@@ -67,7 +67,7 @@
           "letter": "L"
         },
         {
-          "tileType": 0,
+          "tileType": 1,
           "letter": "A"
         },
         {
@@ -83,7 +83,7 @@
           "letter": "Y"
         },
         {
-          "tileType": 0,
+          "tileType": 1,
           "letter": "D"
         },
         {
@@ -91,16 +91,16 @@
           "letter": "E"
         },
         {
-          "tileType": 0,
+          "tileType": 1,
           "letter": "W"
         }
       ]
     },
     {
       "bugCount": 0,
-      "wordCount": 4,
+      "wordCount": 0,
       "timeSec": 0,
-      "totalScore": 0,
+      "totalScore": 200,
       "gridSize": {
         "x": 4,
         "y": 4
@@ -175,8 +175,8 @@
     {
       "bugCount": 0,
       "wordCount": 10,
-      "timeSec": 0,
-      "totalScore": 2500,
+      "timeSec": 600,
+      "totalScore": 0,
       "gridSize": {
         "x": 4,
         "y": 4

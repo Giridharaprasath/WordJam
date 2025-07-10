@@ -33,4 +33,10 @@ namespace WordJam
         public GridSize gridSize = new();
         public List<GridData> gridData = new();
     }
+
+    [Serializable]
+    public class LevelDataList
+    {
+        public List<LevelData> data = new();
+    }
 }
