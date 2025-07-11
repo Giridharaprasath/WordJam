@@ -187,7 +187,7 @@
           "letter": "H"
         },
         {
-          "tileType": 0,
+          "tileType": 2,
           "letter": "E"
         },
         {
@@ -215,7 +215,7 @@
           "letter": "E"
         },
         {
-          "tileType": 0,
+          "tileType": 2,
           "letter": "A"
         },
         {
@@ -223,7 +223,7 @@
           "letter": "N"
         },
         {
-          "tileType": 0,
+          "tileType": 2,
           "letter": "A"
         },
         {

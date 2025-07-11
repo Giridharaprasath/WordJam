@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -19,6 +20,8 @@ namespace WordJam
         private TMP_Text WordCountLeftText;
         [SerializeField]
         private TMP_Text TimeLeftText;
+        [SerializeField]
+        private TMP_Text AverageScoreText;
 
         [Header("Parent")]
         [SerializeField]
@@ -27,6 +30,11 @@ namespace WordJam
         private GameObject ScoreParent;
         [SerializeField]
         private GameObject TimeLeftParent;
+
+        [Header("Screen Block")]
+        [SerializeField]
+        private GameObject ScreenBlock;
+        private Queue<bool> screenBlockQueue = new();
 
         void Awake()
         {
@@ -73,6 +81,24 @@ namespace WordJam
         public void SetTimeLeftText(string time)
         {
             TimeLeftText.text = time;
+        }
+        #endregion
+
+        #region Average Score
+        public void SetAverageScore(string averageScore)
+        {
+            AverageScoreText.text = averageScore;
+        }
+        #endregion
+
+        #region Screen Block
+        public void ShowScreenBlock()
+        {
+            ScreenBlock?.SetActive(true);
+        }
+        public void HideScreenBlock()
+        {
+            ScreenBlock?.SetActive(false);
         }
         #endregion
     }

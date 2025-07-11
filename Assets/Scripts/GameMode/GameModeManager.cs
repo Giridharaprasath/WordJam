@@ -213,7 +213,7 @@ namespace WordJam
             LineRenderer.SetPositions(positions);
 
             selectedTilesList.Add(tile.TileIndex);
-            Debug.Log($"On Selected : {lastSelectedTileIndex} : {GameCommonData.AlphabetToWordMap[tile.LetterIndex]}");
+            // Debug.Log($"On Selected : {lastSelectedTileIndex} : {GameCommonData.AlphabetToWordMap[tile.LetterIndex]}");
         }
 
         private void SetToLastSelectedTile(Tile tile)
@@ -241,7 +241,11 @@ namespace WordJam
             if (GameInstanceManager == null) return;
 #endif
 
-            if (selectedTilesList.Count == 0) return;
+            if (selectedTilesList.Count == 0)
+            {
+                ClearAllData();
+                return;
+            }
 
             StringBuilder stringBuilder = new();
             // Debug.Log($"Linked List Count : {SelectedTilesList.Count}");
@@ -257,15 +261,14 @@ namespace WordJam
             }
 
             string ToCheckWord = stringBuilder.ToString();
+            Debug.Log($"To Check Word : {ToCheckWord}");
 
             if (GameInstanceManager.AllWordsTrie.Contains(ToCheckWord))
             {
                 if (selectedWords.Contains(ToCheckWord))
                 {
                     Debug.Log("Cant Select the same words again");
-                    selectedTilesList.Clear();
-                    lastSelectedTileIndex = -1;
-                    LineRenderer.positionCount = 0;
+                    ClearAllData();
                     return;
                 }
                 selectedWords.Add(ToCheckWord);
@@ -275,6 +278,11 @@ namespace WordJam
                 CheckWin();
             }
 
+            ClearAllData();
+        }
+
+        protected virtual void ClearAllData()
+        {
             selectedTilesList.Clear();
             lastSelectedTileIndex = -1;
             LineRenderer.positionCount = 0;
@@ -287,6 +295,17 @@ namespace WordJam
             foreach (int index in tileIndex)
             {
                 currentScore += tileList[index].GetTileScorePoints();
+                CheckForNearbyRocks(index);
+            }
+        }
+
+        protected virtual void CheckForNearbyRocks(int tileIndex)
+        {
+            List<int> adjacentNodes = tileGraph.GetAdjacentNodes(tileIndex);
+
+            foreach (int index in adjacentNodes)
+            {
+                tileList[index].SetRockState(false);
             }
         }
 

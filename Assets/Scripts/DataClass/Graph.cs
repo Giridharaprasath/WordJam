@@ -22,5 +22,10 @@ namespace WordJam
 
             return false;
         }
+
+        public List<int> GetAdjacentNodes(int node)
+        {
+            return Nodes[node];
+        }
     }
 }

@@ -15,12 +15,16 @@ namespace WordJam
 
         public GameObject BonusBug;
         public GameObject[] PointsObject;
+        public GameObject RockObject;
 
         private int tileScorePoints = 1;
         private bool hasBonus = false;
+        private bool hasRocks = false;
 
         public void OnPointerEnter(PointerEventData eventData)
         {
+            if (hasRocks) return;
+            
             OnTileSelected?.Invoke(this);
         }
 
@@ -45,6 +49,12 @@ namespace WordJam
                 hasBonus = true;
                 BonusBug?.SetActive(true);
             }
+
+            if (gridData.tileType == 2)
+            {
+                hasRocks = true;
+                RockObject?.SetActive(true);
+            }
         }
 
         public void SetTileTextRandom()
@@ -67,6 +77,14 @@ namespace WordJam
                 return (tileScorePoints * 10) + 100;
             }
             return tileScorePoints * 10;
+        }
+
+        public void SetRockState(bool Value)
+        {
+            if (!hasRocks) return;
+
+            hasRocks = Value;
+            RockObject?.SetActive(Value);
         }
     }
 }
