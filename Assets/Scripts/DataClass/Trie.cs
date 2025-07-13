@@ -6,6 +6,13 @@ namespace WordJam
     [Serializable]
     public class Trie
     {
+        /// <summary>
+        /// Trie class representing a prefix tree data structure.
+        /// This class provides methods to add words, check if a word exists, and retrieve words that start with a given prefix.
+        /// This class is used to manage a collection of words in the game, allowing for efficient searching and retrieval of words based on prefixes.
+        /// Each node in the trie represents a character, and the path from the root to a node represents a word.
+        /// The trie structure allows for efficient prefix searching, making it suitable for word games where players need to find words quickly.
+        /// </summary>
         [Serializable]
         public class TrieNode
         {

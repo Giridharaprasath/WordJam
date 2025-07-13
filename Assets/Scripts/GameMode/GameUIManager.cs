@@ -34,7 +34,6 @@ namespace WordJam
         [Header("Screen Block")]
         [SerializeField]
         private GameObject ScreenBlock;
-        private Queue<bool> screenBlockQueue = new();
 
         void Awake()
         {

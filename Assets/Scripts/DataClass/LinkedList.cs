@@ -3,6 +3,15 @@ using System.Collections.Generic;
 
 namespace WordJam
 {
+    /// <summary>
+    /// LinkedList class representing a singly linked list data structure.
+    /// This class provides methods to add and search for elements in the list.
+    /// This class is used to manage a collection of type integer which represents the index of the selected tiles in the game.
+    /// Each node points to the next selected tile, allowing for efficient traversal and manipulation of the list.
+    /// The linked list structure allows for dynamic resizing and efficient insertion and deletion of nodes.
+    /// This class is useful for managing a sequence of selected tiles in the game, where each tile can be added or removed dynamically.
+    /// The linked list can be traversed to retrieve the indices of the selected tiles, and it can be cleared or modified as needed.
+    /// </summary>
     [Serializable]
     public class LinkedList
     {

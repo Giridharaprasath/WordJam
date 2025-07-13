@@ -3,6 +3,13 @@ using System.Collections.Generic;
 
 namespace WordJam
 {
+    /// <summary>
+    /// Graph class representing a collection of nodes and their adjacent nodes.
+    /// This class provides methods to add nodes, check adjacency, retrieve adjacent nodes,
+    /// and perform depth-first search (DFS) traversal.
+    /// This class is used to manage the relationships between the tiles in the game.
+    /// Each tile is represented as a node, and the connections between tiles are represented as edges.
+    /// </summary>
     [Serializable]
     public class Graph
     {

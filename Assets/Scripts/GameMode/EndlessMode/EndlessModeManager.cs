@@ -12,6 +12,9 @@ namespace WordJam
         private int totalPointsCount = 0;
         private readonly float moveSpeed = 0.5f;
 
+        /// <summary>
+        /// A set containing all valid word combinations found in the grid. Contains only unique words.
+        /// </summary>
         public HashSet<string> AllCombinations = new();
         private Dictionary<int, int> TileIndexSwapped = new();
 

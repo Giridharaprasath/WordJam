@@ -29,6 +29,11 @@ namespace WordJam
         public LineRenderer LineRenderer;
 
         // * Private Variables
+        /// <summary>
+        /// A set containing all the words that have been selected by the player.
+        /// This set is used to ensure that each word can only be selected once, preventing duplicates.
+        /// It allows for efficient checking of whether a word has already been selected.
+        /// </summary>
         protected HashSet<string> selectedWords = new();
         protected Graph tileGraph = new();
         protected int lastSelectedTileIndex = -1;

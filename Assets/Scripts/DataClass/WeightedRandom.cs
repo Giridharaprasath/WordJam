@@ -3,6 +3,11 @@ using System.Collections.Generic;
 
 namespace WordJam
 {
+    /// <summary>
+    /// WeightedRandom class provides methods to add items with associated weights and retrieve a random item based on the weights.
+    /// This class is used to select items randomly with a probability proportional to their weights.
+    /// Each item is represented by an index, and the weights determine the likelihood of selecting each item.
+    /// </summary>
     public class WeightedRandom
     {
         private struct WeightedItem
