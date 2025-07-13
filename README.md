@@ -8,6 +8,7 @@ There are two modes available to try
 ## Game
 
 - **[Download Latest Release](https://github.com/Giridharaprasath/WordJam/releases).**
+- Download from Itch.io **[Word Jam Game Link](https://giridharaprasath.itch.io/word-jam)**
 
 > ### Endless Mode
 - Words found are removed and new words are added
