@@ -11,6 +11,8 @@ namespace WordJam
             { 21, "U" }, { 22, "V" }, { 23, "W" }, { 24, "X" }, { 25, "Y" }, { 26, "Z" }
         };
 
+        public static WeightedRandom WeightedRandom { get; private set; } = new();
+
         public static int GetLetterIndex(string letter)
         {
             if (AlphabetToWordMap.Values.Contains(letter))
@@ -25,6 +27,30 @@ namespace WordJam
             }
 
             return -1;
+        }
+
+        public static void ShowDebugLog(string message, int logType)
+        {
+#if UNITY_EDITOR
+            switch (logType)
+            {
+                case 0:
+                    UnityEngine.Debug.Log(message);
+                    break;
+                case 1:
+                    UnityEngine.Debug.LogWarning(message);
+                    break;
+                case 2:
+                    UnityEngine.Debug.LogError(message);
+                    break;
+                default:
+                    UnityEngine.Debug.Log(message);
+                    break;
+            }
+#elif UNITY_DEVELOPMENT
+            UnityEngine.Debug.Log(message);
+#endif
+
         }
     }
 }

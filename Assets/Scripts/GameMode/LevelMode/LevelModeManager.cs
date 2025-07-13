@@ -28,7 +28,7 @@ namespace WordJam
         {
             TextAsset textAsset = Resources.Load<TextAsset>("LevelData");
             string json = textAsset.text;
-            // Debug.Log($"Level Data JSON: {json}");
+            GameCommonData.ShowDebugLog($"Level Data JSON: {json}", 0);
             LevelDataList levelDataList = JsonUtility.FromJson<LevelDataList>(json);
             CurrentLevelData = levelDataList.data[CurrentLevelNumber - 1];
         }
@@ -58,7 +58,7 @@ namespace WordJam
             if (isCompletedLevel)
             {
                 SetCurrentLevelNumber();
-                Debug.Log("Level Completed");
+                GameCommonData.ShowDebugLog("Level Completed", 0);
                 LoadSceneAgain();
             }
         }

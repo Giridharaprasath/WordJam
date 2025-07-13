@@ -29,7 +29,7 @@ namespace WordJam
         public LineRenderer LineRenderer;
 
         // * Private Variables
-        protected Trie selectedWords = new();
+        protected HashSet<string> selectedWords = new();
         protected Graph tileGraph = new();
         protected int lastSelectedTileIndex = -1;
         protected int totalGridCount = 0;
@@ -156,7 +156,6 @@ namespace WordJam
 
         private List<int> GetAdjacentElements(int index, int row, int column)
         {
-            // TODO : FIND ANOTHER WAY TO GET ADJACENT ELEMENTS
             List<int> AdjacentNodes = new();
 
             int x = index % row;
@@ -188,7 +187,7 @@ namespace WordJam
         {
             if (selectedTilesList.Contains(tile.TileIndex))
             {
-                Debug.Log($"Tile Already Selected : {tile.TileIndex} : {GameCommonData.AlphabetToWordMap[tile.LetterIndex]}");
+                GameCommonData.ShowDebugLog($"Tile Already Selected : {tile.TileIndex} : {GameCommonData.AlphabetToWordMap[tile.LetterIndex]}", 0);
                 SetToLastSelectedTile(tile);
                 return;
             }
@@ -199,7 +198,7 @@ namespace WordJam
             {
                 if (!tileGraph.CheckIsNodeAdjacent(tile.TileIndex, lastSelectedTileIndex))
                 {
-                    Debug.Log($"On Selected Tile Is Not Adjacent : {tile.TileIndex} : {GameCommonData.AlphabetToWordMap[tile.LetterIndex]}");
+                    GameCommonData.ShowDebugLog($"On Selected Tile Is Not Adjacent : {tile.TileIndex} : {GameCommonData.AlphabetToWordMap[tile.LetterIndex]}", 0);
                     return;
                 }
             }
@@ -213,7 +212,7 @@ namespace WordJam
             LineRenderer.SetPositions(positions);
 
             selectedTilesList.Add(tile.TileIndex);
-            // Debug.Log($"On Selected : {lastSelectedTileIndex} : {GameCommonData.AlphabetToWordMap[tile.LetterIndex]}");
+            GameCommonData.ShowDebugLog($"On Selected : {lastSelectedTileIndex} : {GameCommonData.AlphabetToWordMap[tile.LetterIndex]}", 0);
         }
 
         private void SetToLastSelectedTile(Tile tile)
@@ -223,7 +222,7 @@ namespace WordJam
             int index = selectedTilesList.FindIndex(tile.TileIndex);
             if (index == -1)
             {
-                Debug.LogWarning($"Last Selected Tile Does Not Exists!!");
+                GameCommonData.ShowDebugLog($"Last Selected Tile Does Not Exists!!", 1);
                 return;
             }
 
@@ -248,7 +247,7 @@ namespace WordJam
             }
 
             StringBuilder stringBuilder = new();
-            // Debug.Log($"Linked List Count : {SelectedTilesList.Count}");
+            GameCommonData.ShowDebugLog($"Linked List Count : {selectedTilesList.Count}", 0);
 
             List<int> tilesIndex = selectedTilesList.GetData();
 
@@ -257,27 +256,31 @@ namespace WordJam
                 Tile tile = tileList[tileIndex];
                 string alphabet = GameCommonData.AlphabetToWordMap[tile.LetterIndex];
                 stringBuilder.Append(alphabet);
-                // Debug.Log($"Linked List Index : {alphabet}");
+                GameCommonData.ShowDebugLog($"Linked List Index : {alphabet}", 0);
             }
 
             string ToCheckWord = stringBuilder.ToString();
-            Debug.Log($"To Check Word : {ToCheckWord}");
+            GameCommonData.ShowDebugLog($"To Check Word : {ToCheckWord}", 0);
 
-            if (GameInstanceManager.AllWordsTrie.Contains(ToCheckWord))
+            bool isValidWord = GameInstanceManager.AllWordsTrie.Contains(ToCheckWord);
+            if (!isValidWord)
             {
-                if (selectedWords.Contains(ToCheckWord))
-                {
-                    Debug.Log("Cant Select the same words again");
-                    ClearAllData();
-                    return;
-                }
-                selectedWords.Add(ToCheckWord);
-                // Debug.Log($"Selected Word Exists!!");
-                currentWordCount++;
-                CalculateScore();
-                CheckWin();
+                GameCommonData.ShowDebugLog($"Selected Word Does Not Exists : {ToCheckWord}", 2);
+                ClearAllData();
+                return;
             }
 
+            if (selectedWords.Contains(ToCheckWord))
+            {
+                GameCommonData.ShowDebugLog("Cant Select the same words again", 1);
+                ClearAllData();
+                return;
+            }
+            selectedWords.Add(ToCheckWord);
+            GameCommonData.ShowDebugLog($"Selected Word Exists!!", 0);
+            currentWordCount++;
+            CalculateScore();
+            CheckWin();
             ClearAllData();
         }
 

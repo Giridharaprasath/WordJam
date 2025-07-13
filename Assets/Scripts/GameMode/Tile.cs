@@ -33,7 +33,7 @@ namespace WordJam
             LetterIndex = GameCommonData.GetLetterIndex(gridData.letter);
             if (LetterIndex < 1 || LetterIndex > 26)
             {
-                Debug.LogError($"Invalid letter index: {LetterIndex} for letter: {gridData.letter}");
+                GameCommonData.ShowDebugLog($"Invalid letter index: {LetterIndex} for letter: {gridData.letter}", 2);
                 return;
             }
             LetterText.text = gridData.letter.ToUpper();
@@ -59,7 +59,8 @@ namespace WordJam
 
         public void SetTileTextRandom()
         {
-            LetterIndex = UnityEngine.Random.Range(1, 26);
+            // LetterIndex = UnityEngine.Random.Range(1, 26);
+            LetterIndex = GameCommonData.WeightedRandom.GetRandomItem();
             var alphabet = GameCommonData.AlphabetToWordMap[LetterIndex];
             LetterText.text = alphabet;
 

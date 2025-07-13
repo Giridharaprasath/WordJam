@@ -1,11 +1,12 @@
+using System;
 using System.Collections.Generic;
 
 namespace WordJam
 {
-    [System.Serializable]
+    [Serializable]
     public class Trie
     {
-        [System.Serializable]
+        [Serializable]
         public class TrieNode
         {
             public Dictionary<char, TrieNode> children;
@@ -57,6 +58,40 @@ namespace WordJam
                 }
             }
             return current.isWord;
+        }
+
+        public List<string> StartsWith(string prefix)
+        {
+            List<string> res = new();
+
+            TrieNode current = root;
+            foreach (char child in prefix)
+            {
+                if (current.children.ContainsKey(child))
+                {
+                    current = current.children[child];
+                }
+                else
+                {
+                    return res;
+                }
+            }
+
+            StartsWith(current, prefix, res);
+            return res;
+        }
+
+        private void StartsWith(TrieNode current, string prefix, List<string> words)
+        {
+            if (current.isWord)
+            {
+                words.Add(prefix);
+            }
+
+            foreach (char key in current.children.Keys)
+            {
+                StartsWith(current.children[key], prefix + key, words);
+            }
         }
     }
 }
