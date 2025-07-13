@@ -270,7 +270,7 @@ namespace WordJam
             bool isValidWord = GameInstanceManager.AllWordsTrie.Contains(ToCheckWord);
             if (!isValidWord)
             {
-                GameCommonData.ShowDebugLog($"Selected Word Does Not Exists : {ToCheckWord}", 2);
+                GameCommonData.ShowDebugLog($"Selected Word Does Not Exists : {ToCheckWord}", 1);
                 ClearAllData();
                 return;
             }
